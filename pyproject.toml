@@ -1,0 +1,23 @@
+[project]
+name = "check-reqs"
+version = "0.1.0"
+description = "Check if package requirements are fulfilled at runtime"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "packaging>=24.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "cblack>=22.6.0",
+    # Note: We don't actually need dmypy, we only install it so that we can
+    # test checking for extras without needing a separate venv.
+    "mypy[dmypy]>=1.12.1",
+    "pytest-cov>=5.0.0",
+    "pytest>=8.3.3",
+]
