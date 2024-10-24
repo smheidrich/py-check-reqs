@@ -10,7 +10,7 @@
 from collections.abc import Iterable
 from importlib.metadata import PackageNotFoundError, distribution, metadata
 
-from packaging.metadata import Metadata
+from packaging.metadata import Metadata, RawMetadata
 from packaging.requirements import Requirement
 
 
@@ -31,7 +31,11 @@ def _check_req_recursive(req: Requirement) -> bool:
   if not req.specifier.contains(version):
     return False  # req version does not match
 
-  req_metadata = Metadata.from_raw(metadata(req.name).json, validate=False)
+  jsonish_req_metadata = metadata(req.name).json
+  # We can ignore the type because if it somehow doesn't match the expected
+  # format, Metadata.from_raw will raise an exception - oh well.
+  raw_req_metadata: RawMetadata = jsonish_req_metadata  # type: ignore[assignment]
+  req_metadata = Metadata.from_raw(raw_req_metadata, validate=False)
   for child_req in req_metadata.requires_dist or []:
     for extra in req.extras:
       if child_req.marker and child_req.marker.evaluate({"extra": extra}):
