@@ -128,18 +128,11 @@ def test_extra_requirement_fulfilled(
   )
 
 
-@pytest.mark.xfail(
-  strict=True,
-  reason="same issue as https://github.com/HansBug/hbutils/issues/109",
-)
 def test_extra_requirement_not_fulfilled_due_to_missing_transitive(
   venv_with_typer_slim_standard_no_pygments_path: Path,
 ) -> None:
   """
   Regression test for https://github.com/HansBug/hbutils/issues/109.
-
-  TODO Of course, it isn't actually fixed yet, so it's more like a
-  "pre-regression test".
   """
   with pytest.raises(sp.CalledProcessError) as exc_info:
     sp.run(

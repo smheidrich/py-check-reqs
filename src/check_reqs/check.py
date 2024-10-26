@@ -37,10 +37,21 @@ def _check_req_recursive(req: Requirement) -> bool:
   raw_req_metadata: RawMetadata = jsonish_req_metadata  # type: ignore[assignment]
   req_metadata = Metadata.from_raw(raw_req_metadata, validate=False)
   for child_req in req_metadata.requires_dist or []:
-    for extra in req.extras:
-      if child_req.marker and child_req.marker.evaluate({"extra": extra}):
-        if not _check_req_recursive(child_req):
-          return False
-        break
+    if not child_req.marker or child_req.marker.evaluate():
+      # child_req is required independent of req's extras, check it
+      # unconditionally:
+      if not _check_req_recursive(child_req):
+        return False
+    else:
+      # child_req may or may not be conditional on extras, so look at our
+      # extras to find out if child_req is required:
+      # TODO This is inefficient if the marker doesn't actually contain
+      # any extras and evaluated to False above for other reasons (e.g. Python
+      # version constraint)
+      for extra in req.extras:
+        if child_req.marker and child_req.marker.evaluate({"extra": extra}):
+          if not _check_req_recursive(child_req):
+            return False
+          break
 
   return True
