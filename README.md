@@ -1,5 +1,7 @@
 # check-reqs
 
-Library to check if package requirements are fulfilled at runtime
+**Not an actual package & will never be published on PyPI!**
+This only exists so that there are automated tests for the snippet in
+`check.py`.
 
-TODO write something here
+For an actual package, see TODO
