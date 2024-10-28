@@ -26,10 +26,10 @@ jobs:
         enable-cache: true
     - name: Install d2
       run: curl -fsSL https://d2lang.com/install.sh | sh -s --
-    - name: Install package for testing
-      run: uv sync --all-extras
+    - name: Install package for testing, with system Python
+      run: uv sync --all-extras --python /usr/bin/python3
     - name: Run tests
-      run: uv run pytest
+      run: . .venv/bin/activate && pytest
 
   typecheck:
     name: Type check
